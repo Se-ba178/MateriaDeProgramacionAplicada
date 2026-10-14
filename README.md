@@ -1,6 +1,7 @@
 
-### UNIDAD - 1 
+# UNIDAD - 1 
 ## Clases genericas 
+---
 > Permiten que un tipo de datos sea un parametro en las definiciones de una clase ,interfaz o metodo 
 >Estas clases son parte de lo que Java denomina programacion generica , que fue introducida en java 5 par para mejorar la seguridad de tipo y reducir el casting(cambiar un tipo de dato a otro) que es propenso a errores .
 >COMO CASTERAR DIFERENTES TIPOS DE DATOS en java(investigar) :
@@ -35,17 +36,27 @@ public class Box<T>{
     }
 }
 ```
+---
 ### Clase dos Progra 
 ## Tipos de datos 
+---
+
 >La programacion tradicional nos obliga a duplicar codigo para diferentes tiposd e datos 
 >Se repite la logica 
 >Aumenta el manteniiento 
 >Escala mal con mas tipos
+---
 ### tipos de datos
+---
+
 >Primitivos : Tipos basicos de datos que almacenan valores simples -- int , double,boolean
 >Objetos : Instancias de clases que contienen datos y comportamiento -- String, Scanner, Arraylist
 >Genericos : tipos parametrizados para mayor flexibilidad y seguridad -- <T>,<E>,<K,V>(Usado en mapas )
+
+---
 ### Dato Generico
+---
+
 >Es un mecanismo que permite definir clases o metodos con un tipo parametrizado
 >El termino generico significa tipos parametrizados usados para flexibilizar el codigo.
 >Seguridad De Tipos -> Type Safety en tiempo de compilacion (es pasar de codigo a una clase que la pueda compilar  investigar mas )
@@ -87,7 +98,10 @@ public class App {
     }
 }
 ```
+
+---
 ## Clase Generica
+---
 >Es necesario identificar el tipo Generico 
 >Usa La notacion diamond "<>" que asi denomina java , infiero el tipo  a partir de la variable 
 >class nombre-clase<lista-parametros-tipo>{....}
@@ -98,26 +112,35 @@ class ArrayList<T>{
 }
 ``` 
 >depende de los argumentos q yo de para definir el nombre de la clase si solo es de tipo T no varia ya sea entero o demas pero si es de tipo E  hay que definirlo arriba <T> -> <T,E>
+
+---
 ### Reglas
+---
 >Prohibido -> Los tipos primitivos puros no son admitidos como argumentos de tipo 
 
 ```java
 Caja<int>
 Caja<Double>
 ```
-
+---
 ## Metodos Genericos 
+---
 >Diseñados para trabajar con cualquier tipo de datos mediantw el uso de "type parameters", definidos en el momento de invocacion
 ```java 
 public <T> calcular(T dato){  
 }
 ```
+---
 ### Tercer clase de Progra 
-## Metodo Gnerico 
+---
+## METODO GENERICO 
+---
+
 >Declara sus propios parametros de tipo para relacionar lso datos que recibe y los devuelve 
 >La declaracion aparece antes del tipo de retorno
 >Si tengo atributos genericos la clase es generica pero tambien puede haber en una clase normal unos metodos genericos 
 >El metodo puede pertenecer a una clase gnerica o a una clase que no lo sea.
+
 
 ```java
 static<R> R identidad(R valor){
@@ -128,10 +151,15 @@ static<R> R identidad(R valor){
 >Declaracion previa;El parametro <T> debe declararse obligatoriamente antes del tipo de retorno
 >Alcance aislado;El parametro T existe unica y exclusivamente dentro de la clase y se puede llamar afuer
 
+---
 ## Cotas de tipado
+---
+
 >Limita los tipos admisibles y garantiza el acceso a operaciones especificas.
 
+---
 ## Transformaciones mediante Fuction
+---
 >Fuction<A,B> e suna innterfaz de java que representa una operacion recibe un valor A y produce un resultado B.
 >Su metodo principal es B apply(A valor)
 
@@ -139,9 +167,8 @@ static<R> R identidad(R valor){
 Fuction<String, Integer> longitud = texto -> texto.length();//En texto se gurada lo que llega  y la funcion flecha longitud es de tipo Fuction 
 Integer cantidad = longitud.apply("Java");
 
-
 ```
--------------------------------------------------------------------------
+
 
 ```java
 Fuction<String, Integer> longitud = t -> t.length();
@@ -167,7 +194,9 @@ int res3= longitud.apply("Hola Mundo");
 el `apply` es solo de la `fuction    `
 "Q es record " investigar -> omitir setter y getters 
 
+---
 ## Comparable: El orden naturald de lso objetos
+---
 Comparable<T> es una interfaz que permite definir como se ordenan los objetos de una clase.
 Se implementa mediante compareTo(), que compara el objeto actual con otro 
 
@@ -201,13 +230,16 @@ if(sensor1.compareTo(sensor2) < 0 ){
     System.out.println("S01 va antes que S02");
 }
 ```
+---
 ## Boxing y Umboxing
+---
 Una clase envolvente que permite presentar ese valor mediante un objeto.Esta distincion importa porque los argumetosde de los genericos debe ser el tipo de referencia :
 Una coleccion de enteros se declara `List<Integer>`, no -> `List<int>`
 
-     |Primitivo(int,double) | Envolvente(Integer,Double)
-uso  | Valores directos     | objetos de Heap
-nulos|No permitidos         | Permite null
+| Primitivo (`int`, `double`) | Envolvente (`Integer`, `Double`) |
+|---|---|
+| Valores directos  | Objetos de Heap |
+| No permite `null` | Permite `null` |
 
 Autoboxin, es la conversion automatica entre un primitivo y su 
 
