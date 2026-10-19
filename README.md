@@ -298,6 +298,8 @@ public class App {
 El parámetro String[] args es un arreglo de cadenas que recibe
 los argumentos enviados desde la terminal cuando
 ejecutamos el programa.
+
+````
 # java Main Pablo 25 Cuenca
 Java recibe tres argumentos:
 0 | "Pablo" | args[0]
@@ -305,7 +307,43 @@ Java recibe tres argumentos:
 2 | "Cuenca"  |  args[2]
 
 Las dos declaracioens son validas 
+
+
+```java
 public static void main(String[] args)
 public static void main(String... args)
+```
 
 En ambos casos , los argumentos llegan como un arreglo de cadenas.
+
+###    Patrones de Diseño
+>Son soluciones generales ,reutilizables y probadas para resolver problemas recurrentes en el diseño de sistemas orientados a objetos
+> No son fragmentos de codiogo que se copian directamente , sino modelos de solucion que pueden adapatarse a diferentes contextos
+
+mAPERde transformacion  --> Q es 
+>Tipos
+creacionales -> Controlan como se crean los objetos  --- Singleton,Factory Method Builder
+estructurales -> Organizan las relaciones entre clases y objetos --- Adapter, Decarator , Facade
+Comportamiento -> Como interactuan lso objetos y distribuyen responsabilidades --- Observer,Strategy,C
+
+Ssitema de monitoreo de sensores
+Factory Method: crear diferentes tipos de sensores sin depender de sus clases concretas
+Observer: notifica automaticamente cuando cambia la lectura
+Strategy: cambiar el algoritmo utilizado para procesar lecturas
+
+Los patrones de dieño buscan mejorar la reutilizacion,mantenibilidad , flexibilidad y extensibilidad de software , reduciendo el acoplamiento entre componentes.
+Un patron de diseño no es un algoritmo es una tecnica, se describe como organizar clases,objetos y responsabilidades para resolver un problema de diseño 
+
+>Creacionsles 
+Evitan que los clientes repitan logicas de construccion complejas que necesitan variar .No ocultan su uso de la palabra `new` , sino que encapsulan el proceso de instanciaciòn
+
+## Patrones de Diseño: Creacionales
+
+| Patrón | Intención Principal | Enfoque de Variación | Ejemplo de Uso |
+|---|---|---|---|
+| **Factory Method** | Una subclase decide qué producto concreto construir. | Operación de creación redefinible. | Exportador que elige formato (TXT, HTML). |
+| **Abstract Factory** | Construir familias de productos relacionados. | Compatibilidad entre múltiples objetos. | Temas visuales (botón y menú oscuros). |
+| **Builder** | Separar la construcción por etapas del uso del objeto. | Configuraciones complejas o validaciones. | Armado progresivo de un informe. |
+| **Prototype** | Crear objetos clonando una instancia preconfigurada. | Evitar reconstruir desde cero. | Plantillas de documentos editables. |
+| **Singleton** | Única instancia con punto de acceso global. | Centralizar un servicio o recurso. | Objeto de configuración inmutable. |
+
