@@ -347,3 +347,282 @@ Evitan que los clientes repitan logicas de construccion complejas que necesitan 
 | **Prototype** | Crear objetos clonando una instancia preconfigurada. | Evitar reconstruir desde cero. | Plantillas de documentos editables. |
 | **Singleton** | Única instancia con punto de acceso global. | Centralizar un servicio o recurso. | Objeto de configuración inmutable. |
 
+
+### 
+>Factory Method
+Una interfaz para crear objetos en una superclase, mientars permite a las subclases alterar el tipo de objetos que se crearan.
+Subclase decida que producto va a construir mientras que la clase creadora conserva un procedimiento comun 
+Metodo de creacion devuelve una abstraccion; cada sobreescritura suministra un prodcuto concreto 
+### Problema
+Un proceso recibe lineas de un identificador , valor y unidad.Un proovedor separa los campos con punto y como; otro usa tabulaciones .En ambos casos se deben omitir lineas vacias, interprestar datos, validar lecturas y señalar en que linea aparecio un error.
+- Si cada formato implementa el preceso completo,se duplicara el recorrido y el manejo de errores .Si el proceso instancia un lector concreto directamente,queda ligado a ese formato.La variacion esta en *como se interpreta una linea* , no el flujo de importaciòn.
+clase abstarcta se instancia e interfaz nos e instancia
+
+> Un metodo que va acrear una clase que en la implementaicion me dice de que tipo es esta 
+
+Creadora -->Clase Abstracta
+Subclase  -->Las q usan el metodo abstracto
+Prodcuto --> Lo q el factory method soluciona la clase final 
+
+## Estructura del patrón Factory Method
+
+| Participante | Responsabilidad |
+|---|---|
+| **Producto** | Interfaz o clase abstracta que define las operaciones disponibles. |
+| **Producto concreto** | Implementa las operaciones del producto. |
+| **Creador** | Declara el Factory Method y contiene el algoritmo común que utiliza el producto. |
+| **Creador concreto** | Sobrescribe el Factory Method para devolver el producto correspondiente. |
+| **Cliente** | Selecciona el creador que necesita. |
+
+Cuando Usar 
+Un proceso necesita trabajar con diferentes implementaciones de un producto
+Se desea conservar un procedimiento comun 
+
+Metodo que va a devolver un prodcuto  - producto generico que las subclases den 
+
+## Abstract Factory
+Patron de diseño creacional que define una interfaz paar crear una familia u objetos relacionados  o compatibles, sin que el cliente tenga q conocer sus clases concretas.
+
+Una fabrica concreta proporciona los prodcutos de una variable determinada .El cliente solicita cada prodcuto mediante la interfaz de fabrica y utiliza objetos mediante sus propios contratos.La descicion sobre que familia utilizar  se toma al elegir la fabrica 
+
+-Concentrar la creacion de colaboradores que deben funcionar juntos, de modo que cambiar la familia no obligue a modificar el codiog que lo utiliza 
+
+Solucion 
+identiifcar los tipos de prodcuto que colaboran
+Definir un contrato para cada tipo de producto
+Declarar una intefaz de fabrica de abstarcta de la msima familia 
+
+## Estructura del patrón Abstract Factory
+
+| Participante | Responsabilidad |
+|---|---|
+| **Fábrica abstracta** | Declara las operaciones para crear los distintos tipos de producto. |
+| **Fábrica concreta** | Proporciona instancias de productos que pertenecen a una familia determinada. |
+| **Producto abstracto** | Define las operaciones de uno de los tipos de producto (el contrato). |
+| **Producto concreto** | Implementa un tipo de producto específico para una familia específica. |
+| **Cliente** | Obtiene y utiliza productos exclusivamente mediante abstracciones. |
+
+Cundo usar 
+Una funcionalidad depende de varios componentes que deben seleccioanrse juntos
+-Existen familias alternativas , como provedores plataformas o protocolos
+
+### Singleton
+Es un patron de diseño creacional que restringe una clase a una unica instancia dentro de un ambito definido y proporciona un punto de acceso a esa instancia 
+Proposito:
+Compartir una configuracion : 
+Restringir a una instancia: Impide q los clientes construyan libremente instancias adicionales 
+Problema :
+Supongamos q varios servicios deben utilizar una misma configuracion predeterminada .Si cada servicio decide crear su propia configuracion o utiliza valores diferentes , el comportamiento de la aplicacion puede divergir .
+
+Compartir una configuracion:crear un objeto al iniciar la aplicacion y entregarlo a los servicios puede ser suficiente.
+
+Restringir una clase o una instancia: La clase debe impedir que los clientes construyan libremente instancias adicionales y  ofrecer acceso a la referencia permitida.
+
+Solucion:
+Controlar la creaciond e las instancias del tipo.
+Mantener una referencia a la instancia permitida.
+Poporcionar un punto de acceso conocido.
+Definir el ambito en el q se aplica la unicidad.
+Diseñar por separado la mutabilidad y la concurrencia de sus operaciones.
+
+>Enum
+
+Restringe a una clase a una unica instancoa dentro de un ambito definido y proporciona un acceso directo a ella 
+
+| Participante | Responsabilidad |
+|---|---|
+| **Singleton** | Restringe la instanciación libre y conserva en memoria el objeto compartido. |
+| **Punto de acceso** | Medio por el cual los clientes pueden obtener la referencia de la instancia única. |
+| **Cliente** | Utiliza las operaciones y el estado del objeto compartido. |
+| **Contrato (opcional)** | Interfaz que expresa lo que necesita el cliente, permitiendo usar sustitutos para pruebas. |
+
+```java
+public interface Parametros{
+        Duracion intervalo();
+        String unidad();
+} 
+public enum Configuracion implement Parametros{
+
+    INSTANCIA;//Punto de acceso unico 
+
+    private final Duracion intervalo = Duration.ofSeconds(30);
+    private final String unidad = "C";
+
+    @Override
+    public Duracion intervalo(){
+        return intervalo
+    }
+    @Override
+    public String unidad(){
+        return unidad
+    }
+
+}
+```
+
+```java
+/ SingletonDemo
+
+// Conexion con = Conexion.getInstancia();
+
+public class Conexion {
+
+    private static Conexion instancia;
+    private Connection conexion;
+
+    // Constructor privado
+    private Conexion() {
+        try {
+            conexion = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/mi_base",
+                "root",
+                "1234"
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Acceso a la única instancia
+    public static synchronized Conexion getInstancia() {
+        if (instancia == null) {
+            instancia = new Conexion(); // USA EL CONSTRUCTOR
+        }
+        return instancia;
+    }
+}
+```
+
+## Builder 
+Organiza la construccion de un objeto mediante pasos separados de su utilizacion
+El cliente configura un constructor especializado y obtiene el prodcuto al finalizar el proceso 
+Puede ejecutar una secuencia de pasos para obtener representaciones diferentes .
+Pasos:
+Aislar -> Mantener las opciones de construccion de un objeto separado (Builder)
+Configurar -> Exponer operaciones fluidas con nombres que expresen cada decision claramente 
+Validar -> Comprobar restricciones y reglas conjuntas de la creacion
+Producir -> Construir y devolver el producto final unicamente cuenaod es 100% aceptable
+
+Problema
+Supongamos que un objeto necesita datos obligatorios ,opciones y valores predeterminados ç
+Constructores gigantes
+Setters y estado incompleto 
+
+Solucion
+Mantener las opcioens de construccion de un objeto separado 
+Exponer operaciones con nombres que exprean cada decicion 
+Validar lso datos y restricciones conjuntas
+Construir y devolver el prodcuto cuando el estado sea aceptable 
+
+| Rol | Responsabilidad |
+|---|---|
+| **Producto** | Representa el resultado final construido e inmutable. |
+| **Builder (Contrato)** | Define o proporciona las operaciones de configuración y validación. |
+| **Builder Concreto** | Mantiene el estado provisional y produce la representación final. |
+| **Director (Opcional)** | Coordina una secuencia de construcción repetitiva o reutilizable (recetas). |
+| **Cliente** | Elige las opciones, invoca los pasos y solicita el resultado final. |
+
+Cuando usar 
+El prodcuto tiene varias opciones o parametros dificiles de distinguir por poscicion 
+Se desea aplicar valores predeterminados de forma explicita 
+Existen restricciones que dependen de la combinacion de varios datos
+El producto no debe quedar disponible mienstras 
+
+Reglas debe tener - >  nombre , intervalo y sensor 
+
+```java
+//Builder concreto 
+static final class Builder {
+    private final String nombre; // Obligatorio en constructor
+    private Duration intervalo = Duration.ofSeconds(30); // Predeterminado
+    private final List<String> sensores = new ArrayList<>(); // Estado provisional
+
+    Builder(String nombre) {
+        this.nombre = Objects.requireNonNull(nombre);
+    }
+
+    Builder cada(Duration intervalo) {
+        this.intervalo = Objects.requireNonNull(intervalo);
+        return this; // Permite interfaz fluida
+    }
+
+    PlanMuestreo construir() {
+        // Validación estricta final
+        if (intervalo.compareTo(Duration.ofSeconds(1)) < 0)
+            throw new IllegalArgumentException("Intervalo mínimo: 1s");
+
+        if (sensores.isEmpty())
+            throw new IllegalArgumentException("Agrega al menos un sensor");
+
+        return new PlanMuestreo(this); // Barrera superada
+    }
+}
+```
+
+```java
+//
+// El cliente expresa la configuración de forma legible y fluida
+PlanMuestreo.Builder builder = new PlanMuestreo.Builder("Laboratorio")
+    .cada(Duration.ofSeconds(10))
+    .agregarSensor("S01")
+    .agregarSensor("S02");
+
+PlanMuestreo plan = builder.construir();
+System.out.println(plan.resumen());
+```
+
+## Prototype
+Obtiene nuevos objetos a partir de objetod existentes mediante una operacion de copia.El objeto que conoce su estado define como reproducirlo .
+
+```java
+// Contrato del prototipo
+interface Copiable<T> {
+    T copiar();
+}
+
+// Componente mutable interno
+static final class ReglaUmbral {
+    private final String magnitud;
+    private double limite; // ¡Estado mutable!
+
+    // Constructor y validadores omitidos...
+
+    // Operación de copia profunda para el componente
+    ReglaUmbral copiar() {
+        return new ReglaUmbral(magnitud, limite);
+    }
+}
+```
+```java
+static final class PerfilSensor implements Copiable<PerfilSensor> {
+    private String nombre;
+    private final List<ReglaUmbral> reglas = new ArrayList<>();
+
+    // ... métodos omitidos ...
+
+    @Override
+    public PerfilSensor copiar() {
+        // 1. Nueva identidad del contenedor
+        PerfilSensor copia = new PerfilSensor(nombre);
+
+        // 2. Copia profunda de los elementos mutables
+        // No basta new ArrayList<>(reglas); compartiría instancias
+        for (ReglaUmbral regla : reglas) {
+            copia.reglas.add(regla.copiar()); // Delegación
+        }
+
+        return copia;
+    }
+}
+```
+
+
+
+| Pregunta de Diseño Estructural | Patrón Recomendado | El cambio localizado |
+|---|---|---|
+| ¿Qué implementación específica necesita mi algoritmo general? | Factory Method | Subclase concreta del creador |
+| ¿Qué productos deben elegirse juntos para evitar errores? | Abstract Factory | Fábrica del equipo (Familia) |
+| ¿Cómo reúno y valido opciones antes de entregar un objeto final? | Builder | Etapas y estado provisional |
+| ¿Cómo obtengo una variante independiente de una configuración inicial? | Prototype | Operación de copia profunda |
+| ¿Necesito garantizar restrictivamente que exista solo una instancia? | Singleton | Punto de acceso (Ej: Enum) |
+
