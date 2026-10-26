@@ -626,3 +626,394 @@ static final class PerfilSensor implements Copiable<PerfilSensor> {
 | ¿Cómo obtengo una variante independiente de una configuración inicial? | Prototype | Operación de copia profunda |
 | ¿Necesito garantizar restrictivamente que exista solo una instancia? | Singleton | Punto de acceso (Ej: Enum) |
 
+---
+
+### ¿qué son los patrones de diseño?
+Imagínate que estás construyendo una casa. No tienes que inventar desde cero cómo hacer una puerta, instalar una ventana o distribuir las habitaciones. Puedes utilizar soluciones que ya han funcionado en otras casas y adaptarlas a la tuya.
+
+En programación pasa lo mismo.
+
+Un patrón de diseño es una solución que ya se conoce y que podemos reutilizar para resolver un problema frecuente al organizar nuestro código.
+
+No es un código que copias y pegas obligatoriamente. Es una forma de organizar las clases y los objetos.
+>¿Para qué sirven?
+
+- Reutilización: aprovechar soluciones que ya funcionan.
+- Mantenimiento: hacer que el código sea más fácil de corregir.
+- Flexibilidad: poder cambiar una parte sin dañar todo.
+- Extensibilidad: agregar nuevas funcionalidades con menos modificaciones.
+- Menos acoplamiento: evitar que una clase dependa demasiado de otra clase específica.
+Por ejemplo, si tu programa trabaja con sensores y mañana necesitas agregar un sensor nuevo, conviene que puedas hacerlo sin reescribir todo el programa.
+2. Los tres tipos de patrones de diseño
+
+> 1. Creacionales
+
+Se encargan de cómo se crean los objetos.
+
+Ejemplos: Factory Method, Abstract Factory, Builder, Prototype y Singleton.
+
+
+> 2. Estructurales
+
+Organizan cómo se relacionan o conectan las clases y los objetos.
+
+Ejemplos: Adapter, Decorator y Facade.
+
+> 3. De comportamiento
+
+Organizan cómo se comunican los objetos y cómo se reparten las tareas.
+
+Ejemplos: Observer y Strategy.
+---
+Truco para memorizar:
+- Creacionales = crear.
+- Estructurales = conectar.
+- Comportamiento = comunicarse.
+En tu documento, el ejemplo de sensores usa tres patrones: Factory Method crea distintos tipos de sensores, Observer avisa cuando cambia una lectura y Strategy permite cambiar la manera de procesarla.
+3. Antes de empezar Java: 5 palabras que debes entender
+Si no entiendes estas palabras, los patrones te van a parecer más difíciles de lo que realmente son.
+Palabra	Explicación sencilla
+Clase	Es el molde para crear objetos.
+Objeto	Es algo creado a partir de una clase.
+Interfaz	Es un contrato que dice qué acciones debe cumplir una clase.
+Instanciar	Crear un objeto a partir de una clase.
+Implementar	Escribir el código que cumple lo que exige una interfaz.
+
+Por ejemplo:
+class Perro {
+    void ladrar() {
+        System.out.println("Guau");
+    }
+}
+
+
+Aquí, Perro es la clase.
+Perro miPerro = new Perro();
+
+
+Aquí creamos un objeto de la clase Perro.
+
+¿Y qué hace new? Crea un objeto. Si escribes new Perro(), estás creando un perro nuevo en memoria.
+
+Una interfaz sería así:
+interface Animal {
+    void hacerSonido();
+}
+
+
+La interfaz establece que una clase debe tener el método hacerSonido(). No es el perro todavía: es el contrato que debe cumplir.
+### 4. Factory Method: una fábrica que decide qué crear
+
+Imagina que tienes una fábrica que produce sensores. Un día necesitas un sensor de temperatura y otro día uno de humedad.
+
+No quieres que todo tu programa tenga que conocer las clases concretas de cada sensor.
+
+Factory Method permite que una subclase decida qué objeto concreto crear, mientras se conserva un procedimiento general.
+Ejemplo sencillo
+Imagina que necesitas crear distintos documentos para exportar información: TXT o HTML.
+
+Primero, estableces qué debe hacer cualquier exportador:
+```java
+interface Exportador {
+    void exportar();
+}
+
+
+Ahora creas dos tipos de exportadores:
+class ExportadorTXT implements Exportador {
+    public void exportar() {
+        System.out.println("Exportando a TXT");
+    }
+}
+
+class ExportadorHTML implements Exportador {
+    public void exportar() {
+        System.out.println("Exportando a HTML");
+    }
+}
+```
+
+
+Cada uno cumple el contrato, pero trabaja de manera diferente.
+
+Luego, creas una clase que declara el método de creación:
+```java
+abstract class Creador {
+    abstract Exportador crearExportador();
+
+    void ejecutar() {
+        Exportador e = crearExportador();
+        e.exportar();
+    }
+}
+
+
+Y las subclases deciden qué exportador entregar:
+class CreadorTXT extends Creador {
+    Exportador crearExportador() {
+        return new ExportadorTXT();
+    }
+}
+
+class CreadorHTML extends Creador {
+    Exportador crearExportador() {
+        return new ExportadorHTML();
+    }
+}
+```
+
+¿Qué tienes que entender de esto?
+- Exportador es el producto.
+- ExportadorTXT y ExportadorHTML son los productos concretos.
+- Creador es la clase que declara el método de creación y contiene el procedimiento común.
+- CreadorTXT y CreadorHTML son los creadores concretos.
+- El cliente elige el creador que necesita.
+
+La palabra clave aquí es abstract: la clase declara un método que sus subclases deben implementar. No puedes crear directamente una instancia de una clase abstracta.
+¿Cuándo se utiliza Factory Method?
+Cuando tienes un procedimiento que debe mantenerse igual, pero necesitas cambiar el tipo de objeto con el que trabaja.
+
+Por ejemplo, importar archivos de distintos proveedores: uno separa los datos con punto y coma y otro con tabulaciones. El proceso general de importar puede ser el mismo, pero cambia la forma de interpretar cada línea.
+
+Frase para el examen: Factory Method permite que las subclases decidan qué producto concreto crear, manteniendo un procedimiento común.
+
+### 5. Abstract Factory: una fábrica que crea una familia completa
+
+Este patrón se parece al anterior, pero tiene una diferencia importante.
+
+Imagina que estás creando una aplicación con dos temas visuales: claro y oscuro.
+
+Cada tema tiene varios componentes:
+- Un botón.
+- Un menú.
+- Una ventana.
+Si eliges el tema oscuro, quieres que todos los componentes sean oscuros. No quieres un botón oscuro y un menú claro por accidente.
+
+Abstract Factory crea familias de objetos relacionados que deben funcionar juntos.
+Ejemplo en palabras sencillas
+Primero, defines los contratos de los productos:
+```java
+interface Boton {
+    void mostrar();
+}
+
+interface Menu {
+    void mostrar();
+}
+
+
+Después, creas las fábricas que permiten obtener ambos componentes:
+interface FabricaUI {
+    Boton crearBoton();
+    Menu crearMenu();
+}
+```
+
+Fíjate en algo importante: esta fábrica no crea un solo producto. Tiene dos métodos de creación, uno para el botón y otro para el menú.
+
+Puedes tener una fábrica concreta para el tema oscuro y otra para el tema claro.
+
+Cuando el programa selecciona una fábrica, obtiene los componentes de esa misma familia.
+
+¿Qué tienes que memorizar?
+--- 
+| Participante | ¿Qué significa? |
+|---|---|
+| Fábrica abstracta | Declara qué productos se pueden crear. |
+| Fábrica concreta | Crea los productos de una familia específica. |
+| Producto abstracto | Define qué debe hacer cada tipo de producto. |
+| Producto concreto | Es el producto real, como un botón oscuro. |
+| Cliente | Utiliza los productos sin depender de sus clases concretas. |
+
+>¿Cuándo se utiliza?
+Cuando necesitas varios objetos que deben elegirse juntos porque son compatibles entre sí.
+
+Ejemplos: temas visuales, familias de componentes para diferentes plataformas o productos de distintos proveedores.
+
+
+ Abstract Factory proporciona una interfaz para crear familias de objetos relacionados sin que el cliente conozca sus clases concretas.
+
+### Diferencia entre Factory Method y Abstract Factory
+
+Factory Method
+¿Qué objeto voy a crear?
+
+La subclase decide qué producto concreto crear.
+
+Abstract Factory
+
+¿Qué familia de objetos necesito?
+
+La fábrica elegida crea varios productos relacionados.
+
+ Factory Method = elegir un producto concreto. Abstract Factory = elegir una familia.
+
+### 6. Singleton: una sola instancia
+
+Imagina que tienes un programa que necesita consultar una configuración general. No quieres que cada parte del programa cree su propia configuración y termine usando valores diferentes.
+
+Para eso puedes utilizar Singleton.
+
+Singleton restringe una clase a una única instancia dentro de un ámbito definido y proporciona un punto de acceso para obtenerla.
+Ejemplo sencillo en Java
+```java
+public class Configuracion {
+
+    private static Configuracion instancia;
+
+    private Configuracion() {
+    }
+
+    public static synchronized Configuracion getInstancia() {
+        if (instancia == null) {
+            instancia = new Configuracion();
+        }
+
+        return instancia;
+    }
+}
+
+
+Vamos por partes.
+- private static Configuracion instancia;: guarda la referencia al objeto compartido.
+- private Configuracion(): el constructor privado impide que otras clases creen objetos directamente con new Configuracion().
+- getInstancia(): es el método público para obtener el objeto.
+- if (instancia == null): comprueba si todavía no se ha creado.
+- instancia = new Configuracion(): lo crea si aún no existe.
+- return instancia: devuelve la instancia existente.
+- synchronized: evita que varios hilos ejecuten simultáneamente ese método de forma que creen instancias duplicadas.
+Para utilizarlo:
+Configuracion c1 = Configuracion.getInstancia();
+Configuracion c2 = Configuracion.getInstancia();
+```
+
+Ambas variables reciben la misma instancia.
+Una forma de recordarlo
+Imagina que una universidad tiene una única oficina central de configuración. Todos los departamentos consultan esa misma oficina en lugar de crear una oficina diferente cada uno.
+> ¿Cuándo se utiliza?
+- Cuando necesitas compartir una instancia.
+- Cuando quieres centralizar una configuración.
+- Cuando necesitas controlar la creación de un objeto.
+
+ Singleton restringe la creación de instancias y proporciona un punto de acceso a la instancia compartida.
+
+Singleton no significa que solo pueda existir un objeto de cualquier clase en todo el programa. La unicidad se aplica a la clase y al ámbito definidos por su implementación.
+
+### 7. Builder: construir un objeto por pasos
+
+Imagina que quieres construir un informe. Necesitas un nombre, una fecha, un formato, una lista de datos y otras opciones.
+
+Podrías crear un constructor con diez parámetros, pero sería fácil confundirse. También podrías crear el objeto y modificarlo después con muchos setters, dejando un objeto incompleto.
+
+Builder permite construir un objeto paso a paso, configurar sus opciones y validar que todo esté correcto antes de entregarlo.
+Ejemplo sencillo
+Imagina que necesitas configurar un plan de muestreo para sensores.
+```java
+PlanMuestreo plan = new PlanMuestreo.Builder("Laboratorio")
+    .cada(Duration.ofSeconds(10))
+    .agregarSensor("S01")
+    .agregarSensor("S02")
+    .construir();
+```
+
+No te preocupes todavía por conocer todas las clases de este ejemplo. Lo importante es entender qué sucede.
+1. Builder("Laboratorio"): establece el nombre obligatorio.
+2. .cada(...): configura cada cuánto se toman las muestras.
+3. .agregarSensor("S01"): agrega un sensor.
+4. .agregarSensor("S02"): agrega otro sensor.
+5. .construir(): comprueba los datos y crea el objeto final si todo es válido.
+
+
+¿Cuándo se utiliza?
+Cuando un objeto tiene muchas opciones, valores predeterminados o reglas que deben comprobarse antes de crearlo.
+
+ Builder separa la construcción de un objeto de su utilización y permite configurarlo por etapas antes de producir el resultado final.
+
+### 8. Prototype: copiar un objeto que ya existe
+Imagina que tienes un perfil de sensor configurado con:
+- Nombre: Sensor de temperatura.
+- Límite máximo: 80.
+- Límite mínimo: 10.
+- Reglas de medición.
+Ahora necesitas otro perfil casi igual, pero con un límite máximo de 100.
+
+Puedes crear un objeto desde cero y volver a configurar todo. O puedes copiar el perfil existente y cambiar lo necesario.
+
+Prototype crea nuevos objetos a partir de otros existentes mediante una operación de copia.
+```java
+Ejemplo sencillo
+interface Copiable<T> {
+    T copiar();
+}
+
+
+Esta interfaz establece que los objetos que la implementan deben proporcionar un método copiar().
+
+Un perfil podría implementar esa interfaz:
+class PerfilSensor implements Copiable<PerfilSensor> {
+
+    private String nombre;
+
+    PerfilSensor(String nombre) {
+        this.nombre = nombre;
+    }
+
+    @Override
+    public PerfilSensor copiar() {
+        return new PerfilSensor(nombre);
+    }
+}
+```
+
+Si hacemos esto:
+PerfilSensor original = new PerfilSensor("Temperatura");
+
+PerfilSensor copia = original.copiar();
+
+
+Tenemos dos objetos diferentes con el mismo nombre inicial.
+
+> ¿Cuándo se utiliza?
+- Cuando necesitas crear objetos parecidos a uno existente.
+- Cuando ya tienes una configuración que deseas reutilizar.
+- Cuando copiar el estado resulta más práctico que reconstruirlo desde cero.
+Prototype permite crear nuevos objetos copiando instancias existentes, definiendo cómo se reproduce su estado.
+
+### 9. Comparación de los cinco patrones
+
+| Patrón | Pregunta que te debes hacer | Idea clave |
+|---|---|---|
+| Factory Method | ¿Qué producto concreto debe crear la subclase? | Decidir qué crear. |
+| Abstract Factory | ¿Qué conjunto de productos debe funcionar junto? | Crear una familia. |
+| Singleton | ¿Cómo controlo que exista una sola instancia? | Una instancia compartida. |
+| Builder | ¿Cómo configuro y valido un objeto complejo? | Construir por pasos. |
+| Prototype | ¿Cómo creo un objeto parecido a uno existente? | Copiar un objeto. |
+
+
+
+>Factory Method
+---
+
+Una fábrica decide qué producto fabricar.
+
+
+>Abstract Factory
+---
+
+Una fábrica produce una familia compatible.
+
+>Singleton
+---
+Una instancia controlada.
+
+
+>Builder
+---
+
+Construir y validar por pasos.
+
+
+>Prototype
+--- 
+
+Copiar una instancia existente.
